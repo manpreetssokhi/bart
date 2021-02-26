@@ -17,10 +17,12 @@ app.use(function (req, res, next) {
     next();
 });
 
-// register view engine
-app.set('view engine', 'ejs');
+// register engine
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
 app.set('port', PORT);
 
+app.use(express.static('public'));
 
 // declare static directory
 app.use("/styles", express.static(__dirname + "/styles"));
