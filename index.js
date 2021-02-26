@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const request = require('request');
 const http = require('http');
 const bodyParser = require('body-parser');
@@ -10,6 +11,19 @@ const PORT = process.env.PORT || 4200;
 // declaring express app
 app = express();
 
+// configure engine
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
+app.set('port', PORT);
+
+app.set('views', path.join(__dirname + "/views"));
+app.use("/styles", express.static(__dirname + "/styles"));
+
+app.use(express.static('public'));
+
+// for constants in the .env file
+require('dotenv').config();
+
 // enabling cors - part 5 same-origin policy
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -17,28 +31,17 @@ app.use(function (req, res, next) {
     next();
 });
 
-// register engine
-app.engine('handlebars', handlebars.engine);
-app.set('view engine', 'handlebars');
-app.set('port', PORT);
-
-app.use(express.static('public'));
-
-// declare static directory
-app.use("/styles", express.static(__dirname + "/styles"));
-
-// for constants in the .env file
-require('dotenv').config();
-
-app.get('/', (req, res) => {
+app.get('/home', (req, res) => {
     // res.send('hello bobby');
-    res.render('home');
+    let context = {};
+    res.render('home', context);
     console.log('in home');
 });
 
 app.get('/arrivals', (req, res) => {
     // res.send('hello bobby');
-    res.render('arrivals');
+    let context = {};
+    res.render('arrivals', context);
     console.log('in arrivals');
 });
 
