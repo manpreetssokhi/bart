@@ -7,6 +7,7 @@ body {
     margin: 0;
 }
 
+/* top nav bar */
 .topnav {
     background-color: #1FA2FF;
     overflow: hidden;
@@ -31,6 +32,7 @@ body {
     color: white;
 }
 
+/* footer styles */
 footer {
     bottom: 0;
     position: fixed;
