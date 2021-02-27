@@ -5,6 +5,8 @@ const http = require('http');
 const bodyParser = require('body-parser');
 // const handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
 const handlebars = require('express-handlebars');
+const { stat } = require('fs');
+const { response } = require('express');
 const bartAPIKey = 'MW9S-E7SL-26DU-VV8V';
 
 const PORT = process.env.PORT || 4200;
@@ -48,6 +50,11 @@ function getJSON(uri, callabck) {
     });
 }
 
+// function to clean up response
+function cleanUpResponse(inputString) {
+    return inputString.replace(/<\/?a[^>]*>/g, '');
+  }
+
 app.get('/', (req, res) => {
     // res.send('hello bobby');
     let context = {};
@@ -59,38 +66,72 @@ app.get('/stations', (req, res) => {
     // res.send('hello bobby');
     let context = {};
     
-    getJSON('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function(body) {
-        // res.send(body.root.stations.station);
-        // console.log(body.root.stations.station);
-        context = body.root.stations.station;
-        console.log(context);
-        // res.render('stations', {title: 'Stations List', context: context, condition: false});
-        res.render('stations', {context});
+    request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function(err, response, body) {
+        if (!err && response.statusCode < 400) {
+            // res.send(body.root.stations.station);
+            // console.log(body.root.stations.station);
+            let contextStation = JSON.parse(body);
+            context.stations = contextStation.root.stations.station;
+
+            console.log(context);
+            // res.render('stations', {title: 'Stations List', context: context, condition: false});
+            res.render('stations', context);
+        } else {
+            res.status(400).send({
+                message: 'no station was send by BART API'
+            });
+        }
     })
 
     console.log('in stations');
 });
 
-app.get('/station', (req, res) => {
-    // res.send('hello bobby');
+app.get('/station/:stn', (req, res) => {
     let context = {};
-    let station = req.query.station;
-
-    if (station !== undefined && station.length == 4) {
-        getJSON('http://api.bart.gov/api/stn.aspx?cmd=stninfo&key=' + bartAPIKey + '&orig=' + station + '&json=y', function(body) {
-            context = body.root.stations.station;
-            console.log(context);
+  
+    // station information
+    request('http://api.bart.gov/api/stn.aspx?cmd=stninfo&orig=' + req.params.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
+      if (!err && response.statusCode < 400) {
+        context.stn = req.params.stn;
+  
+        let contextStation = JSON.parse(body);
+        context.station = contextStation.root.stations.station;
+  
+        context.station.intro.text = cleanUpResponse(context.station.intro['#cdata-section']);
+  
+        // station access information
+        request('http://api.bart.gov/api/stn.aspx?cmd=stnaccess&orig=' + req.params.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
+          if (!err && response.statusCode < 400) {
+            let accessStation = JSON.parse(body);
+            context.access = accessStation.root.stations.station;
+  
+            context.access.entering.text = cleanUpResponse(context.access.entering['#cdata-section']);
+            context.access.exiting.text = cleanUpResponse(context.access.exiting['#cdata-section']);
+            context.access.parking.text = cleanUpResponse(context.access.parking['#cdata-section']);
+            context.access.lockers.text = cleanUpResponse(context.access.lockers['#cdata-section']);
+            context.access.bike_station_text.text = cleanUpResponse(context.access.bike_station_text['#cdata-section']);
+  
+            context.parking = context.access['@parking_flag'] == '1';
+            context.bike = context.access['@bike_flag'] == '1' || context.access['@locker_flag'] == '1' || context.access['@bike_station_flag'] == '1';
+            context.bikeRacks = context.access['@bike_flag'] == '1';
+  
             res.render('station', context);
-        })
-    } else {
-        res.status(400).send({
-            message: 'no station was sent by BART API'
+            console.log(context);
+          } else {
+            res.status(400).send({
+                message: 'no station was send by BART API'
+            });
+          }
         });
-    }
+      } else {
+        res.status(400).send({
+            message: 'no station was send by BART API'
+        });
+      }
+    });
+    console.log('in station/:stn');
+  });
 
-    res.render('station', context);
-    console.log('in station');
-});
 
 app.get('/trips', (req, res) => {
     // res.send('hello bobby');

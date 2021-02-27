@@ -1,31 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="SCU COEN 315 Web Architecture and Protocols class homework 4">
-        <meta name="keywords" content="COEN 315, Manpreet Sokhi, SCU, Web Architecture and Protocols">
-        <meta name="author" content="Manpreet Sokhi">
-        
-        <title>Bart HW</title>
+{{!-- <div class="container">
+    <h1 class="display-4 pt-3">Station Details</h1>
+    <h2 class="display-4 pt-3">Search for a station</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <ul>
+                {{#each stations}}
+                <li>
+                    <span style="color: #1FA2FF"> {{ this.name }} </span>
+                    <span style="color: #E3000B"> {{ this.abbr }} </span>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+</div> --}}
 
-        <link rel="stylesheet" href="/styles/style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    </head>
-
-    <div class="topnav">
-        <a href="stations">Stations List</a>
-        <a class="active" href="station">Station</a>
-        <a href="trips">Trips</a>
+<div class="container">
+    <div class="">
+        <h1 class="display-4 pt-3">Arrival Times</h1>
+        <form method="get">
+            <div class="input-group">
+                <select class="form-control" name="stn" onchange='this.form.submit()'>
+                    <option>Choose a station</option>
+                    {{#each stations}}
+                    <option value={{this.abbr}}>{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </form>
     </div>
 
-    <body>
-        <p>Station</p>
-    </body>
-
-    <footer>
-        <div class="footer">Built by
-            <a href="https://www.manpreetsokhi.live" target="_blank">Manpreet Sokhi</a>
+    <div class="pt-5">
+        {{#if stnName}}
+        <h3>Arrivals at <a href="/stations/{{stn}}">{{stnName}}</a> <small class="text-muted">as of {{time}}</small>
+        </h3>
+        {{/if}}
+        <div class="arrivals pt-3">
+            <table class="table table-hover">
+                {{#each arrivals}}
+                <tr>
+                    <td><i class="fas fa-circle pr-3"
+                            style="color:{{this.estimate.[0].hexcolor}};"></i>{{this.destination}}</td>
+                    <td>{{#each this.estimate}}
+                        {{this.minutes}}
+                        {{#if @last}}
+                        minutes
+                        {{else}},
+                        {{/if}}
+                        {{/each}}</td>
+                </tr>
+                {{/each}}
+            </table>
         </div>
-    </footer>
-</html>
+    </div>
+</div>
