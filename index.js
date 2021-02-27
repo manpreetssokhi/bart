@@ -16,7 +16,7 @@ app = express();
 
 // engine setup
 // app.engine('handlebars', handlebars.engine);
-app.engine('handlebars', handlebars({extname: 'handlebars', defaultLayout: 'main', layoutsDir: path.join(__dirname + '/views/layouts/')}));
+app.engine('handlebars', handlebars({ extname: 'handlebars', defaultLayout: 'main', layoutsDir: path.join(__dirname + '/views/layouts/') }));
 app.set('view engine', 'handlebars');
 app.set('port', PORT);
 app.set('views', path.join(__dirname + '/views'));
@@ -36,13 +36,13 @@ app.use(function (req, res, next) {
 
 // function for creating XML from JSON
 function getJSON(uri, callabck) {
-    http.get(uri, function(APIres) {
+    http.get(uri, function (APIres) {
         console.log('URI: ' + uri);
         console.log('STATUS: ' + APIres.statusCode);
         let bodyChunks = [];
-        APIres.on('data', function(chunk) {
+        APIres.on('data', function (chunk) {
             bodyChunks.push(chunk);
-        }).on('end', function() {
+        }).on('end', function () {
             let body = Buffer.concat(bodyChunks);
             body = JSON.parse(body);
             callabck(body);
@@ -53,7 +53,7 @@ function getJSON(uri, callabck) {
 // function to clean up response
 function cleanUpResponse(inputString) {
     return inputString.replace(/<\/?a[^>]*>/g, '');
-  }
+}
 
 app.get('/', (req, res) => {
     // res.send('hello bobby');
@@ -65,16 +65,14 @@ app.get('/', (req, res) => {
 app.get('/stations', (req, res) => {
     // res.send('hello bobby');
     let context = {};
-    
-    request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function(err, response, body) {
+
+    request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function (err, response, body) {
         if (!err && response.statusCode < 400) {
-            // res.send(body.root.stations.station);
-            // console.log(body.root.stations.station);
             let contextStation = JSON.parse(body);
             context.stations = contextStation.root.stations.station;
 
-            console.log(context);
-            // res.render('stations', {title: 'Stations List', context: context, condition: false});
+            // console.log(context);
+            console.log('/stations - all stations were sent to handlebars')
             res.render('stations', context);
         } else {
             res.status(400).send({
@@ -83,54 +81,68 @@ app.get('/stations', (req, res) => {
         }
     })
 
-    console.log('in stations');
+    console.log('/stations END');
 });
 
-app.get('/station/:stn', (req, res) => {
+app.get('/station/:stn', function (req, res, next) {
     let context = {};
-  
+
     // station information
-    request('http://api.bart.gov/api/stn.aspx?cmd=stninfo&orig=' + req.params.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
-      if (!err && response.statusCode < 400) {
-        context.stn = req.params.stn;
-  
-        let contextStation = JSON.parse(body);
-        context.station = contextStation.root.stations.station;
-  
-        context.station.intro.text = cleanUpResponse(context.station.intro['#cdata-section']);
-  
-        // station access information
-        request('http://api.bart.gov/api/stn.aspx?cmd=stnaccess&orig=' + req.params.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
-          if (!err && response.statusCode < 400) {
-            let accessStation = JSON.parse(body);
-            context.access = accessStation.root.stations.station;
-  
-            context.access.entering.text = cleanUpResponse(context.access.entering['#cdata-section']);
-            context.access.exiting.text = cleanUpResponse(context.access.exiting['#cdata-section']);
-            context.access.parking.text = cleanUpResponse(context.access.parking['#cdata-section']);
-            context.access.lockers.text = cleanUpResponse(context.access.lockers['#cdata-section']);
-            context.access.bike_station_text.text = cleanUpResponse(context.access.bike_station_text['#cdata-section']);
-  
-            context.parking = context.access['@parking_flag'] == '1';
-            context.bike = context.access['@bike_flag'] == '1' || context.access['@locker_flag'] == '1' || context.access['@bike_station_flag'] == '1';
-            context.bikeRacks = context.access['@bike_flag'] == '1';
-  
-            res.render('station', context);
-            console.log(context);
-          } else {
-            res.status(400).send({
-                message: 'no station was send by BART API'
-            });
-          }
-        });
-      } else {
-        res.status(400).send({
-            message: 'no station was send by BART API'
-        });
-      }
+    request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function (err, response, body) {
+        if (!err && response.statusCode < 400) {
+            let contextStation = JSON.parse(body);
+            context.stations = contextStation.root.stations.station;
+
+            console.log('HERE');
+            console.log(req.params.stn);
+
+            if (req.params.stn) {
+                // station access information 
+                request('http://api.bart.gov/api/stn.aspx?cmd=stnaccess&orig=' + req.params.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
+                    if (!err && response.statusCode < 400) {
+                        let accessStation = JSON.parse(body);
+                        context.access = accessStation.root.stations.station;
+
+                        context.access.entering.text = cleanUpResponse(context.access.entering['#cdata-section']);
+                        context.access.exiting.text = cleanUpResponse(context.access.exiting['#cdata-section']);
+                        context.access.parking.text = cleanUpResponse(context.access.parking['#cdata-section']);
+                        context.access.lockers.text = cleanUpResponse(context.access.lockers['#cdata-section']);
+                        context.access.bike_station_text.text = cleanUpResponse(context.access.bike_station_text['#cdata-section']);
+
+                        context.parking = context.access['@parking_flag'] == '1';
+                        context.bike = context.access['@bike_flag'] == '1' || context.access['@locker_flag'] == '1' || context.access['@bike_station_flag'] == '1';
+                        context.bikeRacks = context.access['@bike_flag'] == '1';
+
+                        res.render('station', context);
+                        console.log(context);
+                        console.log('/station - station was requested');
+                    } else {
+                        if (response) {
+                            console.log(response.statusCode);
+                        }
+                        // res.status(400).send({
+                        //     message: 'no station was send by BART API HERE 1'
+                        // });
+                        next(err);
+                    }
+                });
+            } else {
+                res.render('station', context);
+                // console.log(context);
+                console.log('/station - no station was requested');
+            }
+        } else {
+            if (response) {
+                console.log(response.statusCode);
+            }
+            // res.status(400).send({
+            //     message: 'no station was send by BART API HERE 1'
+            // });
+            next(err);
+        }
     });
-    console.log('in station/:stn');
-  });
+    console.log('/station END');
+});
 
 
 app.get('/trips', (req, res) => {
@@ -140,7 +152,7 @@ app.get('/trips', (req, res) => {
     let destination = req.query.destination;
 
     if (source !== undefined && destination !== undefined) {
-        getJSON('http://api.bart.gov/api/sched.aspx?cmd=depart&key=' + bartAPIKey + '&orig=' + source + '&dest=' + destination + '&date=now&b=0&a=4&l=1&json=y', function(body) {
+        getJSON('http://api.bart.gov/api/sched.aspx?cmd=depart&key=' + bartAPIKey + '&orig=' + source + '&dest=' + destination + '&date=now&b=0&a=4&l=1&json=y', function (body) {
             context = body.root.stations.station;
             console.log(context);
             res.render('trips');
