@@ -3,20 +3,22 @@ const path = require('path');
 const request = require('request');
 const http = require('http');
 const bodyParser = require('body-parser');
-const handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
-const bartAPIKey = "MW9S-E7SL-26DU-VV8V";
+// const handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
+const handlebars = require('express-handlebars');
+const bartAPIKey = 'MW9S-E7SL-26DU-VV8V';
 
 const PORT = process.env.PORT || 4200;
 
 // declaring express app
 app = express();
 
-// configure engine
-app.engine('handlebars', handlebars.engine);
+// engine setup
+// app.engine('handlebars', handlebars.engine);
+app.engine('handlebars', handlebars({extname: 'handlebars', defaultLayout: 'main', layoutsDir: path.join(__dirname + '/views/layouts/')}));
 app.set('view engine', 'handlebars');
 app.set('port', PORT);
-app.set('views', path.join(__dirname + "/views"));
-app.use("/styles", express.static(__dirname + "/styles"));
+app.set('views', path.join(__dirname + '/views'));
+app.use("/styles", express.static(__dirname + '/styles'));
 
 app.use(express.static('public'));
 
@@ -25,8 +27,8 @@ require('dotenv').config();
 
 // enabling cors - part 5 same-origin policy
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
 
@@ -49,7 +51,7 @@ function getJSON(uri, callabck) {
 app.get('/', (req, res) => {
     // res.send('hello bobby');
     let context = {};
-    res.render('stationsList', context);
+    res.render('stations', context);
     console.log('in home');
 });
 
@@ -62,7 +64,8 @@ app.get('/stations', (req, res) => {
         // console.log(body.root.stations.station);
         context = body.root.stations.station;
         console.log(context);
-        res.render('stations', context);
+        // res.render('stations', {title: 'Stations List', context: context, condition: false});
+        res.render('stations', {context});
     })
 
     console.log('in stations');

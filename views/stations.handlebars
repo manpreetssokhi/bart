@@ -1,31 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="SCU COEN 315 Web Architecture and Protocols class homework 4">
-        <meta name="keywords" content="COEN 315, Manpreet Sokhi, SCU, Web Architecture and Protocols">
-        <meta name="author" content="Manpreet Sokhi">
-        
-        <title>Bart HW</title>
-
-        <link rel="stylesheet" href="/styles/style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    </head>
-
-    <div class="topnav">
-        <a class="active" href="stations">Stations List</a>
-        <a href="station">Station</a>
-        <a href="trips">Trips</a>
-    </div>
-
-    <body>
-        <p>Welcome to BART Arrivals</p>
-    </body>
-
-    <footer>
-        <div class="footer">Built by
-            <a href="https://www.manpreetsokhi.live" target="_blank">Manpreet Sokhi</a>
+<div class="container">
+    <h1 class="display-4 pt-3">Stations List</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <ul>
+                {{#each context}}
+                {{!-- <li><a href="stations/{{this.abbr}}">{{this.name}}</a></li> --}}
+                <li>
+                    <span style="color: #1FA2FF"> {{ this.name }} </span> 
+                    <span style="color: #E3000B"> {{ this.abbr }} </span>
+                </li>
+                {{/each}}
+            </ul>
         </div>
-    </footer>
-</html>
+    </div>
+</div>

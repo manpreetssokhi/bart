@@ -1,6 +1,6 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
-    color: #ffffff;
+    color: black;
     font-size: 20px;
     line-height: 1.5;
     padding: 0;
@@ -30,6 +30,13 @@ body {
 .topnav a.active {
     background-color: #12D8FA;
     color: white;
+}
+
+.continer {
+    margin: auto;
+    position: absolute;
+    top: 20%;
+    width: 100%;
 }
 
 /* footer styles */
