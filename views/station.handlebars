@@ -1,12 +1,12 @@
 <div class="container">
-    <div class="">
-        <h1 class="display-4 pt-3">Station Details</h1>
+    <div>
+        <h1>Station Details</h1>
         <form method="get">
             <div class="input-group">
                 <select class="form-control" name="stn" onchange='this.form.submit()'>
                     <option>Choose a station</option>
                     {{#each stations}}
-                    <option value={{this.abbr}}>{{this.name}}</option>
+                    <option value={{ this.abbr }}>{{ this.name }}</option>
                     {{/each}}
                 </select>
             </div>
@@ -14,18 +14,20 @@
     </div>
 </div>
 
-<div class="pt-5">
+<div>
     {{#if access}}
-    <h1 class="display-4 pt-3">{{ access.name }}, {{ access.abbr }}</h1>
-    <h3 class="display-4 pt-3">Entering details:</h3>
-    <p>{{{ access.entering.text }}}</p>
-    <h3 class="display-4 pt-3">Exiting details:</h3>
-    <p>{{{ access.exiting.text }}}</p>
-    <h3 class="display-4 pt-3">Parking details:</h3>
-    <p>{{{ access.parking.text }}}</p>
-    <h3 class="display-4 pt-3">Transit Info details:</h3>
-    <p>{{ access.transit_info }}</p>
-    <h3 class="display-4 pt-3">Locker details:</h3>
-    <p>{{{ access.lockers.text }}}</p>
+    <aside>
+        <h1>{{ access.name }}, {{ access.abbr }}</h1>
+        <h3>Entering details:</h3>
+        <p>{{{ access.entering.text }}}</p>
+        <h3>Exiting details:</h3>
+        <p>{{{ access.exiting.text }}}</p>
+        <h3>Parking details:</h3>
+        <p>{{{ access.parking.text }}}</p>
+        <h3>Transit Info details:</h3>
+        <p>{{ access.transit_info }}</p>
+        <h3>Locker details:</h3>
+        <p>{{{ access.lockers.text }}}</p>
+    </aside>
     {{/if}}
 </div>

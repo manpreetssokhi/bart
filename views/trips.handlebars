@@ -1,31 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="SCU COEN 315 Web Architecture and Protocols class homework 4">
-        <meta name="keywords" content="COEN 315, Manpreet Sokhi, SCU, Web Architecture and Protocols">
-        <meta name="author" content="Manpreet Sokhi">
-        
-        <title>Bart HW</title>
-
-        <link rel="stylesheet" href="/styles/style.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    </head>
-
-    <div class="topnav">
-        <a href="stations">Stations List</a>
-        <a href="station">Station</a>
-        <a class="active" href="trips">Trips</a>
+<div class="container">
+    <div>
+        <h1>Plan Trip</h1>
+        <form method="get">
+            <h3>Origin and Destination</h3>
+            <div class="input-group">
+                <select class="form-control" name="source">
+                    <option>Choose a station</option>
+                    {{#each stations}}
+                    <option value={{ this.abbr }}>{{ this.name }}</option>
+                    {{/each}}
+                </select>
+                <select class="form-control" name="destination" onchange='this.form.submit()'>
+                    <option>Choose a station</option>
+                    {{#each stations}}
+                    <option value={{ this.abbr }}>{{ this.name }}</option>
+                    {{/each}}
+                </select>
+                <div class="pt-5">
+                    {{#if tripResponse}}
+                    <table style="width:100%">
+                        <tr>
+                            <th>Origin</th>
+                            <th>Destination</th>
+                            <th>Origin Depart Time</th>
+                            <th>Origin Depart Date</th>
+                            <th>Dest Arrival Time</th>
+                            <th>Dest Arrival Date</th>
+                            <th>Clipper</th>
+                            <th>Trip time</th>
+                            <th>Cost</th>
+                            <th>Line and Train Head Station</th>
+                        </tr>
+                        <tr>
+                            {{#each tripResponse}}
+                            {{#.}}
+                        <tr>
+                            <td><span><small>{{ this.[@origin] }}</small></span></td>
+                            <td><span><small>{{ this.[@destination] }}</small></span></td>
+                            <td><span><small>{{ this.[@origTimeMin] }}</small></span></td>
+                            <td><span><small>{{ this.[@origTimeDate] }}</small></span></td>
+                            <td><span><small>{{ this.[@destTimeMin] }}</small></span></td>
+                            <td><span><small>{{ this.[@destTimeDate] }}</small></span></td>
+                            <td><span><small>{{ this.[@clipper] }}</small></span></td>
+                            <td><span><small>{{ this.[@tripTime] }}</small></span></td>
+                            <td><span><small>{{ this.[@fare] }}</small></span></td>
+                            {{#leg}}
+                            <td>
+                                <span><small>{{ this.[@line] }}</small></span>
+                                <span><small>{{ this.[@trainHeadStation] }}</small></span>
+                            </td>
+                            {{/leg}}
+                        </tr>
+                        {{/.}}
+                        {{/each}}
+                        </tr>
+                    </table>
+                    {{/if}}
+                </div>
+            </div>
+        </form>
     </div>
-
-    <body>
-        <p>Trips</p>
-    </body>
-
-    <footer>
-        <div class="footer">Built by
-            <a href="https://www.manpreetsokhi.live" target="_blank">Manpreet Sokhi</a>
-        </div>
-    </footer>
-</html>
+</div>

@@ -115,11 +115,11 @@ app.get('/station', function (req, res, next) {
                         context.bikeRacks = context.access['@bike_flag'] == '1';
 
                         res.render('station', context);
-                        console.log(context);
+                        // console.log(context);
                         console.log('/station - station was requested');
                     } else {
                         res.status(400).send({
-                            message: 'no station was send by BART API HERE 1'
+                            message: 'no station was sent by BART API HERE 1'
                         });
                         next(err);
                     }
@@ -131,7 +131,7 @@ app.get('/station', function (req, res, next) {
             }
         } else {
             res.status(400).send({
-                message: 'no station was send by BART API HERE 1'
+                message: 'no station was sent by BART API HERE 2'
             });
             next(err);
         }
@@ -139,26 +139,51 @@ app.get('/station', function (req, res, next) {
     console.log('/station END');
 });
 
-
-app.get('/trips', (req, res) => {
+app.get('/trips', function (req, res, next) {
     // res.send('hello bobby');
     let context = {};
     let source = req.query.source;
     let destination = req.query.destination;
 
-    if (source !== undefined && destination !== undefined) {
-        getJSON('http://api.bart.gov/api/sched.aspx?cmd=depart&key=' + bartAPIKey + '&orig=' + source + '&dest=' + destination + '&date=now&b=0&a=4&l=1&json=y', function (body) {
-            context = body.root.stations.station;
-            console.log(context);
-            res.render('trips');
-        })
-    } else {
-        res.status(400).send({
-            message: 'no station was sent by BART API'
-        });
-    }
-    res.render('trips', context);
-    console.log('in trips');
+    request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function (err, response, body) {
+        if (!err && response.statusCode < 400) {
+            let contextStation = JSON.parse(body);
+            context.stations = contextStation.root.stations.station;
+
+            console.log('HERE');
+            console.log(req.query.source);
+            console.log(req.query.destination);
+
+            if (source !== undefined && destination !== undefined) {
+                request('http://api.bart.gov/api/sched.aspx?cmd=depart&key=' + bartAPIKey + '&orig=' + source + '&dest=' + destination + '&date=now&b=0&a=4&l=1&json=y', function (err, response, body) {
+                    if (!err && response.statusCode < 400) {
+                        let contextTrip = JSON.parse(body);
+                        context.tripResponse = contextTrip.root.schedule.request; // .root.schedule; // .stations.station;
+                        // console.log(context.tripResponse.trip[0]['@fare']);
+                        // console.log(context.tripResponse.trip[0].leg);
+                        res.render('trips', context);
+                        console.log('/trips - source and destination were specified');
+                    } else {
+                        res.status(400).send({
+                            message: 'no station was sent by BART API HERE 1'
+                        });
+                        next(err);
+                    }
+                });
+            } else {
+                // context = body.root.stations.station;
+                // console.log(context);
+                res.render('trips', context);
+                console.log('/trips - no source and destination were specified');
+            }
+        } else {
+            res.status(400).send({
+                message: 'no station was sent by BART API HERE 2'
+            });
+            next(err);
+        }
+    });
+    console.log('/trips END');
 });
 
 app.listen(PORT, function () {
