@@ -84,7 +84,7 @@ app.get('/stations', (req, res) => {
     console.log('/stations END');
 });
 
-app.get('/station/:stn', function (req, res, next) {
+app.get('/station', function (req, res, next) {
     let context = {};
 
     // station information
@@ -94,11 +94,12 @@ app.get('/station/:stn', function (req, res, next) {
             context.stations = contextStation.root.stations.station;
 
             console.log('HERE');
-            console.log(req.params.stn);
+            // console.log(req.params.stn);
+            console.log(req.query.stn);
 
-            if (req.params.stn) {
+            if (req.query.stn) {
                 // station access information 
-                request('http://api.bart.gov/api/stn.aspx?cmd=stnaccess&orig=' + req.params.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
+                request('http://api.bart.gov/api/stn.aspx?cmd=stnaccess&orig=' + req.query.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
                     if (!err && response.statusCode < 400) {
                         let accessStation = JSON.parse(body);
                         context.access = accessStation.root.stations.station;
@@ -117,12 +118,9 @@ app.get('/station/:stn', function (req, res, next) {
                         console.log(context);
                         console.log('/station - station was requested');
                     } else {
-                        if (response) {
-                            console.log(response.statusCode);
-                        }
-                        // res.status(400).send({
-                        //     message: 'no station was send by BART API HERE 1'
-                        // });
+                        res.status(400).send({
+                            message: 'no station was send by BART API HERE 1'
+                        });
                         next(err);
                     }
                 });
@@ -132,12 +130,9 @@ app.get('/station/:stn', function (req, res, next) {
                 console.log('/station - no station was requested');
             }
         } else {
-            if (response) {
-                console.log(response.statusCode);
-            }
-            // res.status(400).send({
-            //     message: 'no station was send by BART API HERE 1'
-            // });
+            res.status(400).send({
+                message: 'no station was send by BART API HERE 1'
+            });
             next(err);
         }
     });
