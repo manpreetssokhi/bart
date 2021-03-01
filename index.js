@@ -21,6 +21,7 @@ app.set('view engine', 'handlebars');
 app.set('port', PORT);
 app.set('views', path.join(__dirname + '/views'));
 app.use("/styles", express.static(__dirname + '/styles'));
+app.use("/javascript", express.static(__dirname + '/javascript'));
 
 app.use(express.static('public'));
 
