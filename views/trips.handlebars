@@ -60,24 +60,6 @@
             </div>
         </form>
     </div>
-
     <h1>Trip Map</h1>
     <div id="map"></div>
-
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHIDcJL-JorUkfhTOzE3oALc07rs3ffEs&callback=initMap&libraries=&v=weekly"
-        async></script>
-    <script>
-        function initMap() {
-            var options = {
-                zoom: 8,
-                center: {
-                    lat: 37.3414466,
-                    lng: -121.9699987
-                }
-            }
-            var map = new.google.maps.Map(document.getElementById("map"), options);
-        }
-    </script>
 </div>

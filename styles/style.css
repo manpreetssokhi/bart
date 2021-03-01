@@ -41,6 +41,7 @@ body {
 
 /* Google map */
 #map {
+    height: 600px;
     width: 100%;
 }
 
