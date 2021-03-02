@@ -9,7 +9,7 @@ const { stat } = require('fs');
 const { response } = require('express');
 const bartAPIKey = 'MW9S-E7SL-26DU-VV8V';
 
-const PORT = process.env.PORT || 4200;
+const PORT = process.env.PORT || 2400;
 
 // declaring express app
 app = express();
