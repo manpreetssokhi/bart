@@ -16,7 +16,7 @@ app = express();
 
 // engine setup
 // app.engine('handlebars', handlebars.engine);
-app.engine('handlebars', handlebars({ extname: 'handlebars', defaultLayout: 'main', layoutsDir: path.join(__dirname + '/views/layouts/') }));
+app.engine('handlebars', handlebars({ extname: 'handlebars', defaultLayout: 'index', layoutsDir: path.join(__dirname + '/views/layouts/') }));
 app.set('view engine', 'handlebars');
 app.set('port', PORT);
 app.set('views', path.join(__dirname + '/views'));
