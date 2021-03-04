@@ -10,7 +10,7 @@
                     <option value={{ this.abbr }}>{{ this.name }}</option>
                     {{/each}}
                 </select>
-                <select class="form-control" name="destination" onchange='this.form.submit()'>
+                <select class="form-control" name="destination" onchange='this.form.submit();'>
                     <option>Choose a station</option>
                     {{#each stations}}
                     <option value={{ this.abbr }}>{{ this.name }}</option>
@@ -56,10 +56,34 @@
                         </tr>
                     </table>
                     {{/if}}
+                    {{!-- {{#if sourceLatLng}}
+                    <span><small>{{ sourceLatLng.sourceLat }}</small></span>
+                    <span><small>{{ sourceLatLng.sourceLng }}</small></span>
+                    {{/if}}
+                    {{#if destinationLatLng}}
+                    <span><small>{{ destinationLatLng.destinationLat }}</small></span>
+                    <span><small>{{ destinationLatLng.destinationLng }}</small></span>
+                    {{/if}} --}}
                 </div>
             </div>
         </form>
     </div>
     <h1>Trip Map</h1>
+    {{!-- {{#if sourceLatLng}}
+        {{#if destinationLatLng}} --}}
+            <span><small>{{ sourceLatLng.sourceLat }}</small></span>
+            <span><small>{{ sourceLatLng.sourceLng }}</small></span>
+            <span><small>{{ destinationLatLng.destinationLat }}</small></span>
+            <span><small>{{ destinationLatLng.destinationLng }}</small></span>
+            <script>
+                var sourceLatLngsourceLat = {{sourceLatLng.sourceLat}};
+                var sourceLatLngsourceLng = {{sourceLatLng.sourceLng}};
+                var destinationLatLngdestinationLat = {{destinationLatLng.destinationLat}};
+                var destinationLatLngdestinationLng = {{destinationLatLng.destinationLng}};
+            </script>
+            <input type="button" onclick="calcRoute(sourceLatLngsourceLat, sourceLatLngsourceLng, destinationLatLngdestinationLat, destinationLatLngdestinationLng)" value="Display my trip">
+        {{!-- {{/if}}
+    {{/if}} --}}
+    
     <div id="map"></div>
 </div>

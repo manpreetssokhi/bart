@@ -162,6 +162,24 @@ app.get('/trips', function (req, res, next) {
                         context.tripResponse = contextTrip.root.schedule.request; // .root.schedule; // .stations.station;
                         // console.log(context.tripResponse.trip[0]['@fare']);
                         // console.log(context.tripResponse.trip[0].leg);
+                        for (var iterator in context.stations) {
+                            if (context.stations[iterator].abbr == source) {
+                                sourceLatLngJSON = {
+                                    sourceLat: context.stations[iterator].gtfs_latitude,
+                                    sourceLng: context.stations[iterator].gtfs_longitude
+                                };
+                                // console.log(sourceLatLngJSON);
+                            } else if (context.stations[iterator].abbr == destination) {
+                                destinationLatLngJSON = {
+                                    destinationLat: context.stations[iterator].gtfs_latitude,
+                                    destinationLng: context.stations[iterator].gtfs_longitude   
+                                }
+                                // console.log(destinationLatLngJSON);
+                            }
+                        }
+                        context.sourceLatLng = sourceLatLngJSON;
+                        context.destinationLatLng = destinationLatLngJSON;
+                        console.log(context);
                         res.render('trips', context);
                         console.log('/trips - source and destination were specified');
                     } else {
@@ -173,7 +191,7 @@ app.get('/trips', function (req, res, next) {
                 });
             } else {
                 // context = body.root.stations.station;
-                // console.log(context);
+                console.log(context);
                 res.render('trips', context);
                 console.log('/trips - no source and destination were specified');
             }
