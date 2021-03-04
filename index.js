@@ -35,27 +35,12 @@ app.use(function (req, res, next) {
     next();
 });
 
-// function for creating XML from JSON
-function getJSON(uri, callabck) {
-    http.get(uri, function (APIres) {
-        console.log('URI: ' + uri);
-        console.log('STATUS: ' + APIres.statusCode);
-        let bodyChunks = [];
-        APIres.on('data', function (chunk) {
-            bodyChunks.push(chunk);
-        }).on('end', function () {
-            let body = Buffer.concat(bodyChunks);
-            body = JSON.parse(body);
-            callabck(body);
-        })
-    });
-}
-
 // function to clean up response
 function cleanUpResponse(inputString) {
     return inputString.replace(/<\/?a[^>]*>/g, '');
 }
 
+// home which renders a simple home page
 app.get('/', (req, res) => {
     // res.send('hello bobby');
     let context = {};
@@ -63,6 +48,7 @@ app.get('/', (req, res) => {
     console.log('in home');
 });
 
+// /stations endpoint will send the list of all stations to handlebars via context and will render the statsions.handlebars view
 app.get('/stations', (req, res) => {
     // res.send('hello bobby');
     let context = {};
