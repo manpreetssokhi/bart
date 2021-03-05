@@ -22,6 +22,7 @@ app.set('port', PORT);
 app.set('views', path.join(__dirname + '/views'));
 app.use("/styles", express.static(__dirname + '/styles'));
 app.use("/javascript", express.static(__dirname + '/javascript'));
+app.use("/images", express.static(__dirname + '/images'));
 
 app.use(express.static('public'));
 
@@ -57,9 +58,8 @@ function timeToTrain(originTimeTrainHour, originTimeTrainMinute, originTimeTrain
 // home which renders a simple home page
 app.get('/', (req, res) => {
     // res.send('hello bobby');
-    let context = {};
-    res.render('stations', context);
-    console.log('in home');
+    res.render('home');
+    // console.log('in home');
 });
 
 // /stations endpoint will send the list of all stations to handlebars via context and will render the statsions.handlebars view

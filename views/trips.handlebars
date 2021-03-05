@@ -1,6 +1,6 @@
-<div class="container">
+<div class="container" style="position:relative; left:5px; right:5px;">
     <div>
-        <h1>Plan Trip</h1>
+        <h1 style="text-align:center">Plan Trip</h1>
         <form method="get">
             <h3>Origin and Destination</h3>
             <div class="input-group">
@@ -124,11 +124,11 @@
         <h1>Trip Map</h1>
         {{!-- {{#if sourceLatLng}}
         {{#if destinationLatLng}} --}}
-        <span><small>{{ countDownToTrain.valueJSON }}</small></span>
+        {{!-- <span><small>{{ countDownToTrain.valueJSON }}</small></span>
         <span><small>{{ sourceLatLng.sourceLat }}</small></span>
         <span><small>{{ sourceLatLng.sourceLng }}</small></span>
         <span><small>{{ destinationLatLng.destinationLat }}</small></span>
-        <span><small>{{ destinationLatLng.destinationLng }}</small></span>
+        <span><small>{{ destinationLatLng.destinationLng }}</small></span> --}}
         <script>
             var sourceLatLngsourceLat = {{ sourceLatLng.sourceLat }};
             var sourceLatLngsourceLng = {{ sourceLatLng.sourceLng }};

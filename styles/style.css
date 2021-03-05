@@ -45,6 +45,14 @@ body {
     width: 100%;
 }
 
+/* centering the bart logo image */
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 45%;
+}
+
 /* footer styles */
 footer {
     bottom: 0;
