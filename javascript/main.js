@@ -7,9 +7,9 @@ $(document).ready(function () {
         $("#visitAlert").show();
     }
 
-    localStorage.setItem('timesVisited', timesVisited + 1)
-    console.log('in main.js')
-    console.log(timesVisited)
+    localStorage.setItem('timesVisited', timesVisited + 1);
+    console.log('Times visited');
+    console.log(timesVisited);
 });
 
 let map;
@@ -17,8 +17,6 @@ var directionsService;
 var directionsDisplay;
 
 function initMap() {
-    // directionsService = new google.maps.DirectionsService();
-    // directionsDisplay = new google.maps.DirectionsRenderer();
     directionsService = new google.maps.DirectionsService();
     directionsRenderer = new google.maps.DirectionsRenderer();
 

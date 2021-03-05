@@ -40,6 +40,20 @@ function cleanUpResponse(inputString) {
     return inputString.replace(/<\/?a[^>]*>/g, '');
 }
 
+// function to return time difference between two times 
+function timeToTrain(originTimeTrainHour, originTimeTrainMinute, originTimeTrainSecond, originTimeTrainAmPm) {
+    console.log('in timeToTrain');
+    var currentTime = new Date().toLocaleTimeString();
+    currentTime = currentTime.replace(/\s/g, ':');
+
+    const [hour, minute, second, amPm] = currentTime.split(':');
+    resultMinute = originTimeTrainMinute - minute;
+
+    var resultTotalTime = (parseInt(resultMinute) * 60) + parseInt(second);
+    
+    return parseInt(resultTotalTime);
+}
+
 // home which renders a simple home page
 app.get('/', (req, res) => {
     // res.send('hello bobby');
@@ -158,14 +172,43 @@ app.get('/trips', function (req, res, next) {
                             } else if (context.stations[iterator].abbr == destination) {
                                 destinationLatLngJSON = {
                                     destinationLat: context.stations[iterator].gtfs_latitude,
-                                    destinationLng: context.stations[iterator].gtfs_longitude   
+                                    destinationLng: context.stations[iterator].gtfs_longitude
                                 }
                                 // console.log(destinationLatLngJSON);
                             }
                         }
                         context.sourceLatLng = sourceLatLngJSON;
                         context.destinationLatLng = destinationLatLngJSON;
+
+                        // console.log(context.tripResponse.trip[0]['@origTimeMin']);
+                        var originTimeTrain = context.tripResponse.trip[0]['@origTimeMin'];
+                        var originTimeTrainDate = context.tripResponse.trip[0]['@origTimeDate'];
+                        // console.log('*****');
+                        // console.log(originTimeTrain);
+                        originTimeTrain = originTimeTrain.replace(/\s/g, ':');
+                        const [originTimeTrainHour, originTimeTrainMinute, originTimeTrainAmPm] = originTimeTrain.split(':');
+                        originTimeTrainSecond = '00';
+                        // console.log(originTimeTrainHour);
+                        // console.log(originTimeTrainMinute);
+                        // console.log(originTimeTrainSecond);
+                        // console.log(originTimeTrainAmPm);
+                        // console.log(originTimeTrain);
+
+                        var resultTimeToTrain = timeToTrain(originTimeTrainHour, originTimeTrainMinute, originTimeTrainSecond, originTimeTrainAmPm);
+
+                        resultTimeToTrainJSON = {
+                            originTimeTrainHourJSON: originTimeTrainHour,
+                            originTimeTrainMinuteJSON: originTimeTrainMinute,
+                            originTimeTrainSecondJSON: originTimeTrainSecond,
+                            originTimeTrainAmPmJSON: originTimeTrainAmPm,
+                            originTimeTrainDate: originTimeTrainDate
+                        }
+                        context.countdownToTrain = resultTimeToTrainJSON;
+                        console.log('*****');
+                        // console.log(context.countdownToTrain);
+                        // console.log(typeof context.countdownToTrain);
                         console.log(context);
+
                         res.render('trips', context);
                         console.log('/trips - source and destination were specified');
                     } else {

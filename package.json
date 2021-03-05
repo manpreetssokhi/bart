@@ -27,6 +27,7 @@
     "express-handlebars": "^5.2.1",
     "handlebars": "^4.7.7",
     "jquery": "^3.5.1",
+    "jquery-countdown": "^2.2.0",
     "nodemon": "^2.0.7",
     "request": "^2.88.2"
   }
