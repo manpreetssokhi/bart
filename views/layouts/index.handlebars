@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{{!-- Part #5: The Same-Origin Policy
+It is possible for my website to load and display data from the BART API becasue the browser is requesting data from bart.manpreetsokhi.live server, which is it's own host. 
+It is not requesting directly from the BART API.
+However, my server, bart.manpreetsokhi.live, makes the request as an HTTP client by using the http and request libraries in NodeJS. 
+Since I have added pre-flight headers in my rest api, I am able to make these calls to the BART API. --}}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
