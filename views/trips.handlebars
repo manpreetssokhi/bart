@@ -1,17 +1,17 @@
-<div class="container" style="position:relative; left:5px; right:5px;">
-    <div>
+<div class="container">
+    <div style="position:relative; left:5px; right:5px;">
         <h1 style="text-align:center">Plan Trip</h1>
         <form method="get">
             <h3 style="color: #1FA2FF">Origin and Destination</h3>
             <div class="input-group">
                 <select class="form-control" name="source">
-                    <option>Choose a station</option>
+                    <option>Choose origin</option>
                     {{#each stations}}
                     <option value={{ this.abbr }}>{{ this.name }}</option>
                     {{/each}}
                 </select>
                 <select class="form-control" name="destination" onchange='this.form.submit();'>
-                    <option>Choose a station</option>
+                    <option>Choose destination</option>
                     {{#each stations}}
                     <option value={{ this.abbr }}>{{ this.name }}</option>
                     {{/each}}
@@ -60,7 +60,7 @@
             </div>
         </form>
     </div>
-    <div>
+    <div style="position:relative; left:5px; right:5px;">
         <h1 style="color: #1FA2FF">Train leaves in: </h1>
         {{#if tripResponse}}
         {{#each tripResponse}}
@@ -85,8 +85,8 @@
             originDepartureTime += ' {{countdownToTrain.originTimeTrainAmPmJSON}}'
 
             var originDepartureDate = '{{countdownToTrain.originTimeTrainDate}}';
-            console.log('originDepartureDate');
-            console.log(originDepartureDate);
+            // console.log('originDepartureDate');
+            // console.log(originDepartureDate);
 
             // if PM time
             if (originDepartureTime.indexOf('PM') > 0) {
@@ -96,20 +96,20 @@
             }
 
             originDepartureTime = originDepartureDate + " " + originDepartureTime;
-            console.log('originDepartureTime');
-            console.log(originDepartureTime);
+            // console.log('originDepartureTime');
+            // console.log(originDepartureTime);
 
             let newOriginDepartureDate = new Date(originDepartureTime);
-            console.log('newOriginDepartureDate');
-            console.log(newOriginDepartureDate);
+            // console.log('newOriginDepartureDate');
+            // console.log(newOriginDepartureDate);
 
             let currentDate = new Date();
-            console.log('currentDate');
-            console.log(currentDate);
+            // console.log('currentDate');
+            // console.log(currentDate);
             
-            let diffM = Math.floor((newOriginDepartureDate - currentDate) / 60000);
-            console.log('diffM');
-            console.log(diffM);
+            let timeDiff = Math.floor((newOriginDepartureDate - currentDate) / 60000);
+            // console.log('timeDiff');
+            // console.log(timeDiff);
 
             // console.log('OVER HERE 5');
             // console.log(originDepartureTime);
@@ -118,7 +118,6 @@
                 $(this).html(event.strftime('%H:%M:%S'));
             });
         </script>
-
     </div>
     <div>
         <h1 style="color: #1FA2FF">Trip Map</h1>
