@@ -8,8 +8,8 @@ $(document).ready(function () {
     }
 
     localStorage.setItem('timesVisited', timesVisited + 1);
-    console.log('Times visited');
-    console.log(timesVisited);
+    // console.log('Times visited');
+    // console.log(timesVisited);
 });
 
 let map;

@@ -1,3 +1,4 @@
+<meta http-equiv="refresh" content="30">
 <div class="container" style="position:relative; left:5px; right:5px;">
     <div>
         <h1 style="text-align:center">Station Details</h1>
@@ -15,17 +16,36 @@
     <div>
         {{#if access}}
         <aside>
-            <h1>{{ access.name }}, {{ access.abbr }}</h1>
-            <h3>Entering details:</h3>
-            <p>{{{ access.entering.text }}}</p>
-            <h3>Exiting details:</h3>
-            <p>{{{ access.exiting.text }}}</p>
-            <h3>Parking details:</h3>
-            <p>{{{ access.parking.text }}}</p>
-            <h3>Transit Info details:</h3>
-            <p>{{ access.transit_info }}</p>
-            <h3>Locker details:</h3>
-            <p>{{{ access.lockers.text }}}</p>
+            <h1 style="color: #1FA2FF">{{ access.name }}, {{ access.abbr }}</h1>
+            <h3 style="color: #1FA2FF">Entering details:</h3>
+            <p>{{{ access.entering.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Exiting details:</h3>
+            <p>{{{ access.exiting.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Parking details:</h3>
+            <p>{{{ access.parking.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Fill Time details:</h3>
+            <p>{{{ access.fill_time.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Car Share details:</h3>
+            <p>{{{ access.car_share.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Locker details:</h3>
+            <p>{{{ access.lockers.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Bike Station details:</h3>
+            <p>{{{ access.bike_station_text.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Destination details:</h3>
+            <p>{{{ access.destinations.[#cdata-section] }}}</p>
+
+            <h3 style="color: #1FA2FF">Transit Info details:</h3>
+            <p>{{{ access.transit_info.[#cdata-section] }}}</p>
+
+            {{!-- <h3 style="color: #1FA2FF">Link details:</h3>
+            <p>{{ access.linkJSON }}</p> --}}
         </aside>
         {{/if}}
     </div>

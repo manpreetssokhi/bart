@@ -3,7 +3,6 @@ const path = require('path');
 const request = require('request');
 const http = require('http');
 const bodyParser = require('body-parser');
-// const handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
 const handlebars = require('express-handlebars');
 const { stat } = require('fs');
 const { response } = require('express');
@@ -36,14 +35,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-// function to clean up response
-function cleanUpResponse(inputString) {
-    return inputString.replace(/<\/?a[^>]*>/g, '');
-}
-
 // function to return time difference between two times 
 function timeToTrain(originTimeTrainHour, originTimeTrainMinute, originTimeTrainSecond, originTimeTrainAmPm) {
-    console.log('in timeToTrain');
     var currentTime = new Date().toLocaleTimeString();
     currentTime = currentTime.replace(/\s/g, ':');
 
@@ -57,23 +50,20 @@ function timeToTrain(originTimeTrainHour, originTimeTrainMinute, originTimeTrain
 
 // home which renders a simple home page
 app.get('/', (req, res) => {
-    // res.send('hello bobby');
     res.render('home');
-    // console.log('in home');
 });
 
-// /stations endpoint will send the list of all stations to handlebars via context and will render the statsions.handlebars view
+// stations endpoint will send the list of all stations to handlebars via context and will render the statsions.handlebars view
 app.get('/stations', (req, res) => {
-    // res.send('hello bobby');
     let context = {};
 
+    // all station information
     request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function (err, response, body) {
         if (!err && response.statusCode < 400) {
             let contextStation = JSON.parse(body);
             context.stations = contextStation.root.stations.station;
 
-            // console.log(context);
-            console.log('/stations - all stations were sent to handlebars')
+            // console.log('/stations - all stations were sent to handlebars')
             res.render('stations', context);
         } else {
             res.status(400).send({
@@ -81,23 +71,20 @@ app.get('/stations', (req, res) => {
             });
         }
     })
-
-    console.log('/stations END');
+    // console.log('/stations END');
 });
 
+// station access details - first send all the stations, then based on req.query get stations
 app.get('/station', function (req, res, next) {
     let context = {};
 
-    // station information
+    // all station information
     request('http://api.bart.gov/api/stn.aspx?cmd=stns&key=' + bartAPIKey + '&json=y', function (err, response, body) {
         if (!err && response.statusCode < 400) {
             let contextStation = JSON.parse(body);
             context.stations = contextStation.root.stations.station;
-
-            console.log('HERE');
-            // console.log(req.params.stn);
-            console.log(req.query.stn);
-
+            // console.log('HERE');
+            // console.log(req.query.stn);
             if (req.query.stn) {
                 // station access information 
                 request('http://api.bart.gov/api/stn.aspx?cmd=stnaccess&orig=' + req.query.stn + '&key=' + bartAPIKey + '&json=y', function (err, response, body) {
@@ -105,19 +92,9 @@ app.get('/station', function (req, res, next) {
                         let accessStation = JSON.parse(body);
                         context.access = accessStation.root.stations.station;
 
-                        context.access.entering.text = cleanUpResponse(context.access.entering['#cdata-section']);
-                        context.access.exiting.text = cleanUpResponse(context.access.exiting['#cdata-section']);
-                        context.access.parking.text = cleanUpResponse(context.access.parking['#cdata-section']);
-                        context.access.lockers.text = cleanUpResponse(context.access.lockers['#cdata-section']);
-                        context.access.bike_station_text.text = cleanUpResponse(context.access.bike_station_text['#cdata-section']);
-
-                        context.parking = context.access['@parking_flag'] == '1';
-                        context.bike = context.access['@bike_flag'] == '1' || context.access['@locker_flag'] == '1' || context.access['@bike_station_flag'] == '1';
-                        context.bikeRacks = context.access['@bike_flag'] == '1';
-
                         res.render('station', context);
                         // console.log(context);
-                        console.log('/station - station was requested');
+                        // console.log('/station - station was requested');
                     } else {
                         res.status(400).send({
                             message: 'no station was sent by BART API HERE 1'
@@ -128,7 +105,7 @@ app.get('/station', function (req, res, next) {
             } else {
                 res.render('station', context);
                 // console.log(context);
-                console.log('/station - no station was requested');
+                // console.log('/station - no station was requested');
             }
         } else {
             res.status(400).send({
@@ -137,11 +114,12 @@ app.get('/station', function (req, res, next) {
             next(err);
         }
     });
-    console.log('/station END');
+    // console.log('/station END');
 });
 
+// trip will plan trip based on source and destination - first send all the stations and then based on source and destination respond with trip
+// output context JSON will have stations, tripResponse, sourceLatLng, destinationLatLng, and countdownToTrain
 app.get('/trips', function (req, res, next) {
-    // res.send('hello bobby');
     let context = {};
     let source = req.query.source;
     let destination = req.query.destination;
@@ -151,9 +129,9 @@ app.get('/trips', function (req, res, next) {
             let contextStation = JSON.parse(body);
             context.stations = contextStation.root.stations.station;
 
-            console.log('HERE');
-            console.log(req.query.source);
-            console.log(req.query.destination);
+            // console.log('HERE');
+            // console.log(req.query.source);
+            // console.log(req.query.destination);
 
             if (source !== undefined && destination !== undefined) {
                 request('http://api.bart.gov/api/sched.aspx?cmd=depart&key=' + bartAPIKey + '&orig=' + source + '&dest=' + destination + '&date=now&b=0&a=4&l=1&json=y', function (err, response, body) {
@@ -167,14 +145,12 @@ app.get('/trips', function (req, res, next) {
                                 sourceLatLngJSON = {
                                     sourceLat: context.stations[iterator].gtfs_latitude,
                                     sourceLng: context.stations[iterator].gtfs_longitude
-                                };
-                                // console.log(sourceLatLngJSON);
+                                }; 
                             } else if (context.stations[iterator].abbr == destination) {
                                 destinationLatLngJSON = {
                                     destinationLat: context.stations[iterator].gtfs_latitude,
                                     destinationLng: context.stations[iterator].gtfs_longitude
                                 }
-                                // console.log(destinationLatLngJSON);
                             }
                         }
                         context.sourceLatLng = sourceLatLngJSON;
@@ -183,16 +159,9 @@ app.get('/trips', function (req, res, next) {
                         // console.log(context.tripResponse.trip[0]['@origTimeMin']);
                         var originTimeTrain = context.tripResponse.trip[0]['@origTimeMin'];
                         var originTimeTrainDate = context.tripResponse.trip[0]['@origTimeDate'];
-                        // console.log('*****');
-                        // console.log(originTimeTrain);
                         originTimeTrain = originTimeTrain.replace(/\s/g, ':');
                         const [originTimeTrainHour, originTimeTrainMinute, originTimeTrainAmPm] = originTimeTrain.split(':');
                         originTimeTrainSecond = '00';
-                        // console.log(originTimeTrainHour);
-                        // console.log(originTimeTrainMinute);
-                        // console.log(originTimeTrainSecond);
-                        // console.log(originTimeTrainAmPm);
-                        // console.log(originTimeTrain);
 
                         var resultTimeToTrain = timeToTrain(originTimeTrainHour, originTimeTrainMinute, originTimeTrainSecond, originTimeTrainAmPm);
 
@@ -203,14 +172,11 @@ app.get('/trips', function (req, res, next) {
                             originTimeTrainAmPmJSON: originTimeTrainAmPm,
                             originTimeTrainDate: originTimeTrainDate
                         }
+                        
                         context.countdownToTrain = resultTimeToTrainJSON;
-                        console.log('*****');
-                        // console.log(context.countdownToTrain);
-                        // console.log(typeof context.countdownToTrain);
-                        console.log(context);
 
                         res.render('trips', context);
-                        console.log('/trips - source and destination were specified');
+                        // console.log('/trips - source and destination were specified');
                     } else {
                         res.status(400).send({
                             message: 'no station was sent by BART API HERE 1'
@@ -220,9 +186,9 @@ app.get('/trips', function (req, res, next) {
                 });
             } else {
                 // context = body.root.stations.station;
-                console.log(context);
+                // console.log(context);
                 res.render('trips', context);
-                console.log('/trips - no source and destination were specified');
+                // console.log('/trips - no source and destination were specified');
             }
         } else {
             res.status(400).send({
@@ -231,7 +197,7 @@ app.get('/trips', function (req, res, next) {
             next(err);
         }
     });
-    console.log('/trips END');
+    // console.log('/trips END');
 });
 
 app.listen(PORT, function () {

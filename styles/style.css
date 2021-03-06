@@ -54,16 +54,16 @@ body {
 }
 
 /* footer styles */
-footer {
+#footer {
     bottom: 0;
-    position: fixed;
+    position: absolute;
     width: 100%;
 }
 
 .footer {
     background: #1FA2FF;
     height: 25px;
-    margin: auto;
+    /* margin: auto; */
     text-align: center;
     padding: 10px;
     color: #ffffff;
