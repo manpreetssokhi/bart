@@ -2,9 +2,11 @@
 <html lang="en">
 
 {{!-- Part #5: The Same-Origin Policy
-It is possible for my website to load and display data from the BART API becasue the browser is requesting data from bart.manpreetsokhi.live server, which is it's own host. 
+It is possible for my website to load and display data from the BART API becasue the browser is requesting data from
+bart.manpreetsokhi.live server, which is it's own host.
 It is not requesting directly from the BART API.
-However, my server, bart.manpreetsokhi.live, makes the request as an HTTP client by using the http and request libraries in NodeJS. 
+However, my server, bart.manpreetsokhi.live, makes the request as an HTTP client by using the http and request libraries
+in NodeJS.
 Since I have added pre-flight headers in my rest api, I am able to make these calls to the BART API. --}}
 
 <head>
@@ -18,7 +20,7 @@ Since I have added pre-flight headers in my rest api, I am able to make these ca
     <link rel="stylesheet" href="/styles/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-    <script async
+    <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHIDcJL-JorUkfhTOzE3oALc07rs3ffEs&callback=initMap">
         </script>
     <script type="text/javascript" src="/javascript/main.js"></script>
